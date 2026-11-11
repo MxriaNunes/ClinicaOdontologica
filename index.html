@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Odontológica - Larisa Guimarães</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f9edeb',
+                            100: '#efcec8',
+                            500: '#e4aea5',
+                            600: '#d98e80',
+                            700: '#c44f3b',
+                        },
+                        mint: {
+                            500: '#e4aea5',
+                            600: '#d98e88',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="src/styles.css">
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 flex flex-col min-h-screen">
+
+    <!-- NOTIFICAÇÃO TOAST -->
+    <div id="toast" class="fixed bottom-5 left-4 right-4 sm:left-auto sm:right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 max-w-md bg-white border-l-4 p-4 rounded-xl shadow-xl flex items-center space-x-3">
+        <i id="toast-icon" class="fas fa-check-circle text-xl"></i>
+        <span id="toast-msg" class="text-sm font-medium"></span>
+    </div>
+
+    <!-- MODAL DE IMAGEM AMPLIADA (GALERIA) -->
+    <div id="image-modal" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4" onclick="closeImageModal()">
+        <div class="relative max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
+            <button onclick="closeImageModal()" class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 text-slate-700 w-10 h-10 rounded-full flex items-center justify-center z-10 font-bold transition">
+                <i class="fas fa-times"></i>
+            </button>
+            <img id="modal-img" src="" alt="Trabalho Ampliado" class="w-full max-h-[70vh] object-cover">
+            <div class="p-6 bg-white">
+                <h3 id="modal-title" class="font-bold text-xl text-slate-900 mb-2"></h3>
+                <p id="modal-desc" class="text-slate-600 text-sm"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="bg-white border-b border-slate-100 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="navigate('home')">
+                    <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white text-xl shadow-md shadow-brand-500/20">
+                        <i class="fas fa-tooth"></i>
+                    </div>
+                    <span class="text-xl font-bold bg-gradient-to-r from-brand-600 to-mint-600 bg-clip-text text-transparent">Clinica Odontológica</span>
+                </div>
+                
+                <!-- Desktop Nav -->
+                <div class="hidden lg:flex items-center space-x-6" id="nav-links">
+                    <!-- Dinâmico via JS -->
+                </div>
+
+                <!-- Mobile Hamburger -->
+                <div class="lg:hidden flex items-center">
+                    <button type="button" onclick="toggleMobileMenu()" aria-label="Abrir menu" aria-controls="mobile-menu" aria-expanded="false" class="text-slate-600 hover:text-brand-500 focus:outline-none p-2">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-b border-slate-100 px-4 pt-2 pb-4 space-y-1">
+            <!-- Dinâmico via JS -->
+        </div>
+    </nav>
+
+    <!-- CONTEÚDO PRINCIPAL (RENDERIZAÇÃO DINÂMICA) -->
+    <main id="app-content" class="flex-grow">
+        <!-- Páginas serão inseridas aqui via JS -->
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center space-x-2 text-white text-lg font-bold mb-4">
+                    <i class="fas fa-tooth text-brand-500"></i>
+                    <span>Clinica Odontológica</span>
+                </div>
+                <p class="text-sm text-slate-400">Você no dentista, sem traumas.
+                    Atendemos todas as especialidades, adultos e pediatria.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4">Horário de Atendimento</h4>
+                <p class="text-sm">Segunda a Sexta: 08:00 - 18:00</p>
+                <p class="text-sm">Sábado: 08:30 - 12:30</p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-4">Contato</h4>
+                <p class="text-sm"><i class="fas fa-phone mr-2 text-brand-500"></i> (21) 99977-0213</p>
+                <!-- <p class="text-sm"><i class="fas fa-envelope mr-2 text-brand-500"></i> contato@odontovida.com.br</p> -->
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-slate-800 text-center text-xs">
+            &copy; 2026 Desenvolvolvido por ERRO 404: integrantes não encontrados. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <!-- SCRIPT DA APLICAÇÃO -->
+    <script type="module">
+        import { supabase, testSupabaseConnection } from './src/lib/supabase.js';
+
+        testSupabaseConnection()
+            .then((status) => {
+                if (status.ok) {
+                    console.info('✅ Supabase conectado:', status.message);
+                } else {
+                    console.warn('⚠️ Supabase indisponível:', status.error);
+                }
+            })
+            .catch((error) => {
+                console.error('❌ Erro ao testar a conexão com o Supabase:', error);
+            });
+
+        // --- BASE DE DADOS INICIAL (MOCK) ---
+        const initialSlots = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+        const SERVICE_SPECIALTIES = [
+            'Clínico Geral',
+            'Ortodontia',
+            'Endodontia',
+            'Dentística',
+            'Periodontia',
+            'Prótese',
+            'Harmonização Facial',
+            'Cirurgia Bucomaxilofacial',
+            'Implantodontia'
+        ];
+
+        function formatPrice(price) {
+            return price === null || price === undefined ? 'A consultar' : `R$ ${Number(price).toFixed(2)}`;
+        }
+
+        // Fotos dos Trabalhos (Galeria)
+        const sampleGallery = [
+            { id: 'g1', title: 'Faceta Dentária', desc: 'Transformação rápida do sorriso para corrigir imperfrições de cor, formato e desgaste com um aspecto natural.', img: './src/img/img2.jpeg' },
+            { id: 'g2', title: 'Clareamento de Consultório', desc: 'Resultado de 2 sessões de clareamento a laser com ganho de 4 tons.', img: './src/img/img4.jpeg' },
+            { id: 'g3', title: 'Odontopediatria', desc: 'Cuidado especializado e acolhedor para a saúde bucal de bebês, crianças e adolecentes.', img: './src/img/img1.jpeg' }
+        ];
+
+        // Avaliações de Exemplo Fictícias
+        const sampleReviews = [
+            { name: 'Carlos Eduardo', rating: 5, comment: 'Atendimento impecável! O doutor é extremamente atencioso e o consultório super moderno.' },
+            { name: 'Ana Paula Souza', rating: 5, comment: 'Fiz meu clareamento e adorei o resultado. Procedimento sem dor e ambiente acolhedor.' },
+            { name: 'Roberto Lima', rating: 5, comment: 'Sempre tive medo de dentista, mas a equipe da OdontoVida me deixou super tranquilo.' }
+        ];
+
+        // --- INICIALIZAÇÃO DE STORAGE ---
+        function initStorage() {
+            localStorage.removeItem('ov_users');
+            if (!localStorage.getItem('ov_slots')) localStorage.setItem('ov_slots', JSON.stringify(initialSlots));
+        }
+
+        initStorage();
+
+        let currentUser = null;
+        let servicesCache = [];
+
+        // Helpers de Dados
+        const db = {
+            getServices: () => servicesCache,
+            getSlots: () => JSON.parse(localStorage.getItem('ov_slots')),
+            getUser: () => currentUser
+        };
+
+        async function loadAppointments(patientId = null) {
+            let query = supabase
+                .from('appointments')
+                .select('id, patient_id, service_id, appointment_date, appointment_time, status, created_at, profiles(name)')
+                .order('appointment_date', { ascending: true });
+
+            if (patientId) query = query.eq('patient_id', patientId);
+
+            const { data, error } = await query;
+            if (error) throw error;
+
+            return data.map((appointment) => ({
+                id: appointment.id,
+                userId: appointment.patient_id,
+                userName: appointment.profiles?.name || 'Paciente',
+                serviceId: appointment.service_id,
+                date: appointment.appointment_date,
+                time: appointment.appointment_time.slice(0, 5),
+                status: appointment.status,
+                createdAt: appointment.created_at
+            }));
+        }
+
+        async function loadServices(includeInactive = false) {
+            if (!supabase) {
+                throw new Error('Supabase não está configurado.');
+            }
+
+            let query = supabase
+                .from('services')
+                .select('id, title, description, specialty, duration_minutes, price, professional_name, active')
+                .order('created_at', { ascending: true });
+            if (!includeInactive) query = query.eq('active', true);
+
+            const { data, error } = await query;
+            if (error) throw error;
+
+            const services = data.map((service) => ({
+                id: service.id,
+                title: service.title,
+                description: service.description,
+                specialty: service.specialty,
+                duration: service.duration_minutes,
+                price: service.price === null ? null : Number(service.price),
+                professionalName: service.professional_name,
+                active: service.active
+            }));
+            if (!includeInactive) servicesCache = services;
+            return services;
+        }
+
+        // --- GERENCIAMENTO DE ESTADO E NAVEGAÇÃO ---
+        let bookingState = { serviceId: null, date: null, time: null };
+
+        async function loadCurrentUser(authUser) {
+            if (!authUser) {
+                currentUser = null;
+                return null;
+            }
+
+            const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('id, name, phone, role')
+                .eq('id', authUser.id)
+                .single();
+
+            if (error) throw error;
+
+            currentUser = {
+                id: profile.id,
+                name: profile.name,
+                email: authUser.email,
+                phone: profile.phone,
+                role: profile.role
+            };
+            return currentUser;
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, (character) => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[character]);
+        }
+
+        function navigate(page, param = null) {
+            const user = db.getUser();
+            const app = document.getElementById('app-content');
+            
+            // Proteção de Rotas
+            if (page.startsWith('admin') && (!user || user.role !== 'admin')) {
+                showToast('Acesso negado. Área restrita para administradores.', 'error');
+                navigate('login');
+                return;
+            }
+            if ((page === 'profile' || page === 'my-appointments' || page === 'booking') && !user) {
+                showToast('Faça login para continuar.', 'info');
+                navigate('login');
+                return;
+            }
+
+            renderNav();
+            window.scrollTo(0,0);
+
+            // Roteamento
+            switch(page) {
+                case 'home': renderHome(app); break;
+                case 'services': renderServices(app); break;
+                case 'service-detail': renderServiceDetail(app, param); break;
+                case 'login': renderLogin(app); break;
+                case 'register': renderRegister(app); break;
+                case 'profile': renderProfile(app); break;
+                case 'booking': renderBooking(app, param); break;
+                case 'my-appointments': renderMyAppointments(app); break;
+                case 'admin-dashboard': renderAdminDashboard(app); break;
+                case 'admin-services': renderAdminServices(app); break;
+                case 'admin-appointments': renderAdminAppointments(app); break;
+                case 'admin-users': renderAdminUsers(app); break;
+                default: renderHome(app);
+            }
+        }
+
+        // --- SCROLL SUAVE PARA SEÇÕES ---
+        function scrollToSection(sectionId) {
+            if (window.location.hash !== '#home') {
+                navigate('home');
+                setTimeout(() => {
+                    const el = document.getElementById(sectionId);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            } else {
+                const el = document.getElementById(sectionId);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // --- MODAL DA GALERIA ---
+        function openImageModal(imgUrl, title, desc) {
+            document.getElementById('modal-img').src = imgUrl;
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = desc;
+            document.getElementById('image-modal').classList.remove('hidden');
+            document.getElementById('image-modal').classList.add('flex');
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.add('hidden');
+            document.getElementById('image-modal').classList.remove('flex');
+        }
+
+        // --- SISTEMA DE NOTIFICAÇÃO (TOAST) ---
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const text = document.getElementById('toast-msg');
+
+            text.innerText = msg;
+            toast.className = `fixed bottom-5 left-4 right-4 sm:left-auto sm:right-5 z-50 transform transition-all duration-300 max-w-md p-4 rounded-xl shadow-xl flex items-center space-x-3 border-l-4 ${
+                type === 'success' ? 'bg-emerald-50 border-emerald-500 text-emerald-800' :
+                type === 'error' ? 'bg-rose-50 border-rose-500 text-rose-800' :
+                'bg-sky-50 border-sky-500 text-sky-800'
+            }`;
+
+            icon.className = `fas ${
+                type === 'success' ? 'fa-check-circle text-emerald-500' :
+                type === 'error' ? 'fa-exclamation-circle text-rose-500' :
+                'fa-info-circle text-sky-500'
+            } text-xl`;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        // --- RENDERIZAÇÃO DO MENU ---
+        function renderNav() {
+            const user = db.getUser();
+            const linksContainer = document.getElementById('nav-links');
+            const mobileContainer = document.getElementById('mobile-menu');
+
+            let html = `
+                <button onclick="navigate('home')" class="text-slate-600 hover:text-brand-500 font-medium text-sm">Início</button>
+                <button onclick="navigate('services')" class="text-slate-600 hover:text-brand-500 font-medium text-sm">Tratamentos</button>
+                <button onclick="scrollToSection('doctor-section')" class="text-slate-600 hover:text-brand-500 font-medium text-sm">O Doutor</button>
+                <button onclick="scrollToSection('gallery-section')" class="text-slate-600 hover:text-brand-500 font-medium text-sm">Trabalhos</button>
+                <button onclick="scrollToSection('location-section')" class="text-slate-600 hover:text-brand-500 font-medium text-sm">Localização</button>
+            `;
+
+            if (user) {
+                if (user.role === 'admin') {
+                    html += `
+                        <button onclick="navigate('admin-dashboard')" class="text-brand-600 font-semibold text-sm">Painel Admin</button>
+                        <button onclick="navigate('admin-appointments')" class="text-slate-600 hover:text-brand-500 font-medium text-sm">Agendamentos</button>
+                    `;
+                } else {
+                    html += `<button onclick="navigate('my-appointments')" class="text-slate-600 hover:text-brand-500 font-medium text-sm">Meus Agendamentos</button>`;
+                }
+                html += `
+                    <button onclick="navigate('profile')" class="text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl text-sm font-medium flex items-center space-x-2">
+                        <i class="fas fa-user-circle text-brand-500"></i>
+                        <span>${escapeHtml(user.name.split(' ')[0])}</span>
+                    </button>
+                    <button onclick="handleLogout()" class="text-rose-500 hover:text-rose-700 text-sm font-medium"><i class="fas fa-sign-out-alt"></i> Sair</button>
+                `;
+            } else {
+                html += `
+                    <button onclick="navigate('login')" class="text-brand-600 font-medium text-sm">Entrar</button>
+                    <button onclick="navigate('register')" class="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-md shadow-brand-500/10">Criar Conta</button>
+                `;
+            }
+
+            linksContainer.innerHTML = html;
+            mobileContainer.innerHTML = html;
+            mobileContainer.querySelectorAll('button').forEach((button) => {
+                button.className = 'block w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-brand-600';
+            });
+            mobileContainer.classList.add('hidden');
+            document.querySelector('[aria-controls="mobile-menu"]').setAttribute('aria-expanded', 'false');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const isOpening = menu.classList.toggle('hidden') === false;
+            document.querySelector('[aria-controls="mobile-menu"]').setAttribute('aria-expanded', String(isOpening));
+        }
+
+        function handleLogout() {
+            supabase.auth.signOut().then(({ error }) => {
+                if (error) throw error;
+                currentUser = null;
+                showToast('Você saiu do sistema.');
+                navigate('home');
+            }).catch((error) => {
+                console.error('Erro ao sair:', error);
+                showToast(`Não foi possível sair: ${error.message}`, 'error');
+            });
+        }
+
+        // --- PÁGINAS DA APLICAÇÃO ---
+
+        // 1. Home
+        function renderHome(container) {
+            const services = db.getServices().slice(0, 3);
+            container.innerHTML = `
+                <!-- Hero Section -->
+                <section class="overflow-x-clip bg-gradient-to-b from-brand-50 via-white to-slate-50 py-16 md:py-20">
+                    <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                        <div class="space-y-6">
+                            <span class="inline-block px-3 py-1 bg-brand-100 text-brand-700 rounded-full text-xs font-semibold tracking-wide uppercase">Cuidado Odontológico de Excelência</span>
+                            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">Seu novo sorriso começa com uma experiência incrível.</h1>
+                            <p class="text-lg text-slate-600">Ambiente acolhedor, tratamentos indolores e tecnologia de ponta para você e sua família.</p>
+                            
+                            <!-- Botões de Ação Principal & Destaques -->
+                            <div class="flex flex-wrap gap-3 pt-2">
+                                <button onclick="navigate('booking')" class="bg-brand-500 hover:bg-brand-600 text-white px-6 py-3.5 rounded-xl font-semibold shadow-lg shadow-brand-500/25 flex items-center space-x-2">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <span>Agendar Consulta</span>
+                                </button>
+                                <button onclick="scrollToSection('doctor-section')" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-5 py-3.5 rounded-xl font-semibold flex items-center space-x-2 shadow-sm">
+                                    <i class="fas fa-user-md text-brand-500"></i>
+                                    <span>Conheça o Doutor</span>
+                                </button>
+                                <button onclick="scrollToSection('gallery-section')" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-5 py-3.5 rounded-xl font-semibold flex items-center space-x-2 shadow-sm">
+                                    <i class="fas fa-images text-mint-500"></i>
+                                    <span>Ver Trabalhos</span>
+                                </button>
+                                <button onclick="scrollToSection('location-section')" class="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-5 py-3.5 rounded-xl font-semibold flex items-center space-x-2 shadow-sm">
+                                    <i class="fas fa-map-marker-alt text-rose-500"></i>
+                                    <span>Como Chegar</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <div class="w-full h-80 md:h-96 bg-gradient-to-tr from-brand-500 to-mint-500 rounded-3xl opacity-10 absolute -rotate-3 transform scale-105"></div>
+                            <div class="bg-white p-5 sm:p-8 rounded-3xl border border-slate-100 shadow-xl relative space-y-6">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-mint-500/10 text-mint-600 rounded-full flex items-center justify-center text-xl">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-slate-800">Biossegurança Rigorosa</h3>
+                                        <p class="text-sm text-slate-500">Ambiente 100% esterilizado e seguro.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-brand-500/10 text-brand-600 rounded-full flex items-center justify-center text-xl">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-slate-800">Horários Flexíveis</h3>
+                                        <p class="text-sm text-slate-500">Agende online em menos de 2 minutos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Destaque de Serviços -->
+                <section class="max-w-7xl mx-auto px-4 py-16 border-b border-slate-100">
+                    <div class="text-center max-w-2xl mx-auto mb-12">
+                        <h2 class="text-3xl font-bold text-slate-900">Tratamentos em Destaque</h2>
+                        <p class="text-slate-600 mt-2">Oferecemos soluções completas para a saúde e estética do seu sorriso.</p>
+                    </div>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${services.map(s => `
+                            <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                                <div>
+                                    <div class="w-10 h-10 bg-brand-50 text-brand-600 rounded-lg flex items-center justify-center text-lg mb-4">
+                                        <i class="fas fa-tooth"></i>
+                                    </div>
+                                    <h3 class="font-bold text-slate-900 text-lg mb-2">${s.title}</h3>
+                                    <p class="text-slate-600 text-sm mb-4 line-clamp-2">${s.description}</p>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center text-sm font-semibold mb-4 text-slate-700">
+                                        <span>${formatPrice(s.price)}</span>
+                                        <span class="text-xs bg-slate-100 px-2.5 py-1 rounded-full text-slate-500"><i class="far fa-clock mr-1"></i>${s.duration} min</span>
+                                    </div>
+                                    <button onclick="navigate('service-detail', '${s.id}')" class="w-full bg-slate-50 hover:bg-brand-50 text-brand-600 font-semibold py-2.5 rounded-xl border border-slate-200 transition text-sm">
+                                        Ver Detalhes
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+
+                <!-- Seção 1: Biografia do Doutor -->
+                <section id="doctor-section" class="max-w-7xl mx-auto px-4 py-16 border-b border-slate-100">
+                    <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                        <div class="lg:col-span-5">
+                            <div class="relative">
+                                <div class="w-full h-full bg-brand-500/10 rounded-3xl absolute top-4 left-4 -z-10"></div>
+                                <img src="./src/img/dra.jpeg" alt="Foto do Doutor" class="rounded-3xl w-full object-cover shadow-lg border border-slate-100">
+                            </div>
+                        </div>
+                        <div class="lg:col-span-7 space-y-4">
+                            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-3 py-1 rounded-full">Sobre o Profissional</span>
+                            <h2 class="text-3xl font-extrabold text-slate-900">Dra.Larisa Guimarães</h2>
+                            <p class="text-sm font-semibold text-slate-500">CRO-RJ 46524 | Especialista em Periodontia</p>
+                            <p class="text-slate-600 leading-relaxed pt-2">
+                               A Dra. Larisa Guimarães é cirurgiã-dentista, formada em Odontologia pela Universidade Unigranrio.
+Com 8 anos de experiência na área odontológica, atua em Odontologia Clínica Geral e reabilitação oral, dedicando-se à saúde bucal e à transformação de sorrisos. 
+                            </p>
+                            <p class="text-slate-600 leading-relaxed">
+                                Seu trabalho é pautado no atendimento humanizado, na atenção às necessidades de cada paciente e na busca por tratamentos seguros e de qualidade, proporcionando mais saúde, confiança e bem-estar.
+                            </p>
+                            <div class="pt-4 flex items-center space-x-6 text-slate-700">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-award text-brand-500 text-xl"></i>
+                                    <span class="text-sm font-semibold">+ 8 Anos de Experiência</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-smile text-mint-500 text-xl"></i>
+                                    <span class="text-sm font-semibold">+3.000 Pacientes Atendidos</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Seção 2: Especializações -->
+                <section class="max-w-7xl mx-auto px-4 py-16 border-b border-slate-100">
+                    <div class="text-center max-w-2xl mx-auto mb-12">
+                        <h2 class="text-3xl font-bold text-slate-900">Formação & Especializações</h2>
+                        <p class="text-slate-600 mt-2">Qualificação constante para oferecer o melhor tratamento odontológico.</p>
+                    </div>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <div class="w-12 h-12 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center text-xl font-bold"><i class="fas fa-graduation-cap"></i></div>
+                            <h3 class="font-bold text-slate-900 text-lg">Formação Acadêmica</h3>
+                            <p class="text-slate-600 text-sm">Bacharel em Ortodontia pela Universidade Unigranrio Afya.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <div class="w-12 h-12 bg-mint-50 text-mint-600 rounded-xl flex items-center justify-center text-xl font-bold"><i class="fas fa-certificate"></i></div>
+                            <h3 class="font-bold text-slate-900 text-lg">Especializações</h3>
+                            <p class="text-slate-600 text-sm">Especialista em Periodontia.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-xl font-bold"><i class="fas fa-user-graduate"></i></div>
+                            <h3 class="font-bold text-slate-900 text-lg">Aperfeiçoamentos</h3>
+                            <p class="text-slate-600 text-sm">Curso avançado em lentes  de resina composta e estética avançada.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Seção 3: Fotos dos Trabalhos (Galeria Interativa) -->
+                <section id="gallery-section" class="max-w-7xl mx-auto px-4 py-16 border-b border-slate-100">
+                    <div class="text-center max-w-2xl mx-auto mb-12">
+                        <h2 class="text-3xl font-bold text-slate-900">Nossos Trabalhos</h2>
+                        <p class="text-slate-600 mt-2">Clique em uma imagem para ampliá-la e ver os detalhes dos resultados.</p>
+                    </div>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${sampleGallery.map(item => `
+                            <div onclick="openImageModal('${item.img}', '${item.title}', '${item.desc}')" class="group bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer">
+                                <div class="overflow-hidden h-52 relative">
+                                    <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                    <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+                                        <i class="fas fa-search-plus text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div class="p-5">
+                                    <h3 class="font-bold text-slate-900 text-lg mb-1">${item.title}</h3>
+                                    <p class="text-slate-600 text-xs line-clamp-2">${item.desc}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+
+                <!-- Seção 4: Avaliações dos Pacientes -->
+                <section class="max-w-7xl mx-auto px-4 py-16 border-b border-slate-100 bg-slate-50/50 rounded-3xl">
+                    <div class="text-center max-w-2xl mx-auto mb-12">
+                        <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-3 py-1 rounded-full">Exemplos Fictícios</span>
+                        <h2 class="text-3xl font-bold text-slate-900 mt-2">Avaliações dos Pacientes</h2>
+                        <p class="text-slate-600 mt-1">Veja o que nossos pacientes dizem sobre nosso atendimento.</p>
+                    </div>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${sampleReviews.map(r => `
+                            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="flex text-amber-400 mb-3 text-sm">
+                                        ${'<i class="fas fa-star"></i>'.repeat(r.rating)}
+                                    </div>
+                                    <p class="text-slate-600 text-sm italic mb-4">"${r.comment}"</p>
+                                </div>
+                                <div class="border-t border-slate-100 pt-3">
+                                    <span class="font-bold text-slate-800 text-sm block">${r.name}</span>
+                                    <span class="text-xs text-slate-400">Paciente Verificado</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="text-center mt-8">
+                        <a href="https://maps.google.com" target="_blank" class="inline-flex items-center space-x-2 text-brand-600 hover:text-brand-700 font-bold text-sm bg-white px-5 py-2.5 rounded-xl border border-slate-200 shadow-sm">
+                            <i class="fab fa-google text-rose-500"></i>
+                            <span>Ver todas as avaliações no Google</span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Seção 5: Localização -->
+                <section id="location-section" class="max-w-7xl mx-auto px-4 py-16">
+                    <div class="grid lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-5 space-y-6">
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-3 py-1 rounded-full">Onde Estamos</span>
+                                <h2 class="text-3xl font-bold text-slate-900 mt-2">Nossa Localização</h2>
+                                <p class="text-slate-600 mt-2 text-sm">Fácil acesso, estacionamento no local e estrutura aconchegante para receber você.</p>
+                            </div>
+                            
+                            <div class="space-y-4 text-sm text-slate-700">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-map-marker-alt text-brand-500 text-lg mt-1"></i>
+                                    <div>
+                                        <strong class="block text-slate-900">Endereço Completo:</strong>
+                                        <span>Rua Coronel Agostinho, 142 - Campo Grande</span><br>
+                                        <span>Rio De Janeiro - RJ, CEP 23050-360</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-phone text-brand-500 text-lg mt-1"></i>
+                                    <div>
+                                        <strong class="block text-slate-900">WhatsApp:</strong>
+                                        <span>(21) 99977-0213</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="https://maps.google.com" target="_blank" class="inline-flex items-center space-x-2 bg-brand-500 hover:bg-brand-600 text-white font-bold px-6 py-3.5 rounded-xl shadow-lg shadow-brand-500/20">
+                                <i class="fas fa-directions"></i>
+                                <span>Ver no Google Maps</span>
+                            </a>
+                        </div>
+                        <div class="lg:col-span-7">
+                            <div class="w-full h-80 bg-slate-200 rounded-3xl overflow-hidden shadow-md border border-slate-100 relative flex items-center justify-center">
+                                <!-- Placeholder do Mapa (Interativo via Iframe) -->
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.2339658350757!2d-43.562203375448526!3d-22.90473963779645!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9be1713f11ae21%3A0xbf03673ae80cd54f!2sClinica%20Odontol%C3%B3gica%20Dra%20Larisa%20Guimar%C3%A3es!5e0!3m2!1spt-BR!2sbr!4v1792775191210!5m2!1spt-BR!2sbr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" class="w-full h-full border-0" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        // 2. Lista de Tratamentos
+        function renderServices(container) {
+            const services = db.getServices();
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto px-4 py-12">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-slate-900">Nossos Tratamentos</h1>
+                        <p class="text-slate-600">Escolha uma especialidade para consultar os procedimentos disponíveis.</p>
+                    </div>
+                    <div class="space-y-3">
+                        ${SERVICE_SPECIALTIES.map((specialty, index) => {
+                            const specialtyServices = services.filter(service => service.specialty === specialty);
+                            return `
+                                <details class="bg-white rounded-2xl border border-slate-200 overflow-hidden" ${index === 0 ? 'open' : ''}>
+                                    <summary class="cursor-pointer list-none flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50">
+                                        <span class="font-bold text-slate-900">${specialty}</span>
+                                        <span class="text-sm text-slate-500">${specialtyServices.length} procedimento(s) <i class="fas fa-chevron-down ml-2"></i></span>
+                                    </summary>
+                                    <div class="border-t border-slate-100 p-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        ${specialtyServices.length ? specialtyServices.map(service => `
+                                            <article class="rounded-xl border border-slate-100 p-5 flex flex-col justify-between">
+                                                <div>
+                                                    <h3 class="font-bold text-slate-900 text-lg mb-2">${escapeHtml(service.title)}</h3>
+                                                    <p class="text-slate-600 text-sm mb-3">${escapeHtml(service.description)}</p>
+                                                    ${service.professionalName ? `<p class="text-xs text-slate-500 mb-3">Profissional: ${escapeHtml(service.professionalName)}</p>` : ''}
+                                                </div>
+                                                <div class="border-t border-slate-100 pt-3 mt-2">
+                                                    <div class="flex justify-between items-center mb-4 text-sm">
+                                                        <span class="text-slate-500">${service.duration} min</span>
+                                                        <span class="font-bold text-brand-600">${formatPrice(service.price)}</span>
+                                                    </div>
+                                                    <div class="grid grid-cols-2 gap-2">
+                                                        <button onclick="navigate('service-detail', '${service.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 rounded-lg text-sm">Detalhes</button>
+                                                        <button onclick="navigate('booking', '${service.id}')" class="bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 rounded-lg text-sm">Agendar</button>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        `).join('') : '<p class="text-sm text-slate-500 col-span-full">Nenhum procedimento disponível nesta especialidade.</p>'}
+                                    </div>
+                                </details>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 3. Detalhes do Serviço
+        function renderServiceDetail(container, serviceId) {
+            const service = db.getServices().find(s => s.id === serviceId);
+            if (!service) { navigate('services'); return; }
+
+            container.innerHTML = `
+                <div class="max-w-3xl mx-auto px-4 py-12">
+                    <button onclick="navigate('services')" class="text-slate-500 hover:text-slate-700 mb-6 flex items-center text-sm font-semibold">
+                        <i class="fas fa-arrow-left mr-2"></i> Voltar para Tratamentos
+                    </button>
+                    <div class="bg-white rounded-3xl border border-slate-100 p-8 shadow-md">
+                        <div class="inline-block p-3 bg-brand-50 text-brand-600 rounded-2xl mb-4">
+                            <i class="fas fa-tooth text-2xl"></i>
+                        </div>
+                        <h1 class="text-3xl font-bold text-slate-900 mb-4">${service.title}</h1>
+                        <p class="text-slate-600 text-lg leading-relaxed mb-6">${service.description}</p>
+                        <p class="text-sm text-brand-700 font-semibold mb-4">${escapeHtml(service.specialty)}</p>
+                        ${service.professionalName ? `<p class="text-sm text-slate-600 mb-4">Profissional responsável: ${escapeHtml(service.professionalName)}</p>` : ''}
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-y border-slate-100 py-6 mb-6">
+                            <div>
+                                <span class="text-xs uppercase font-bold text-slate-400 block mb-1">Tempo Estimado</span>
+                                <span class="text-lg font-semibold text-slate-800"><i class="far fa-clock mr-2 text-brand-500"></i>${service.duration} Minutos</span>
+                            </div>
+                            <div>
+                                <span class="text-xs uppercase font-bold text-slate-400 block mb-1">Investimento</span>
+                                <span class="text-lg font-bold text-brand-600">${formatPrice(service.price)}</span>
+                            </div>
+                        </div>
+
+                        <button onclick="navigate('booking', '${service.id}')" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-brand-500/20 text-center block">
+                            Agendar Este Tratamento
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 4. Fluxo de Agendamento Passo a Passo
+        async function renderBooking(container, serviceId = null) {
+            if (serviceId) bookingState.serviceId = serviceId;
+            const services = db.getServices();
+            const slots = db.getSlots();
+            const selectedService = services.find(service => service.id === bookingState.serviceId);
+            const initialSpecialty = selectedService?.specialty || SERVICE_SPECIALTIES.find(specialty => services.some(service => service.specialty === specialty)) || SERVICE_SPECIALTIES[0];
+            let appointments = [];
+            try {
+                appointments = await loadAppointments();
+            } catch (error) {
+                console.error('Erro ao carregar horários ocupados:', error);
+                showToast(`Não foi possível consultar os horários: ${error.message}`, 'error');
+            }
+
+            const getBookedTimes = (date) => {
+                return appointments
+                    .filter(a => a.date === date && a.status !== 'Cancelado')
+                    .map(a => a.time);
+            };
+
+            container.innerHTML = `
+                <div class="max-w-2xl mx-auto px-4 py-12">
+                    <h1 class="text-3xl font-bold text-slate-900 text-center mb-2">Agendamento de Consulta</h1>
+                    <p class="text-slate-500 text-center mb-8">Siga os passos abaixo para confirmar seu horário.</p>
+
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-lg space-y-6">
+                        <!-- Passo 1: Escolher Tratamento -->
+                        <div>
+                            <label for="book-specialty" class="block text-sm font-bold text-slate-700 mb-2">1. Selecione a Especialidade</label>
+                            <select id="book-specialty" class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                ${SERVICE_SPECIALTIES.map(specialty => `<option value="${specialty}" ${initialSpecialty === specialty ? 'selected' : ''}>${specialty}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div>
+                            <label for="book-service" class="block text-sm font-bold text-slate-700 mb-2">2. Selecione o Procedimento</label>
+                            <select id="book-service" class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <option value="">-- Escolha um serviço --</option>
+                            </select>
+                        </div>
+
+                        <!-- Passo 2: Escolher Data -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">3. Escolha a Data</label>
+                            <input type="date" id="book-date" min="${new Date().toISOString().split('T')[0]}" class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500" value="${bookingState.date || ''}">
+                        </div>
+
+                        <!-- Passo 3: Escolher Horário -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">4. Horários Disponíveis</label>
+                            <div id="slots-container" class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                <p class="text-xs text-slate-400 col-span-full">Selecione uma data para visualizar os horários.</p>
+                            </div>
+                        </div>
+
+                        <!-- Passo 5: Confirmar -->
+                        <div class="border-t border-slate-100 pt-6">
+                            <button onclick="confirmBooking()" class="w-full bg-mint-500 hover:bg-mint-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-mint-500/20">
+                                Confirmar Agendamento
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const dateInput = document.getElementById('book-date');
+            const specialtySelect = document.getElementById('book-specialty');
+            const serviceSelect = document.getElementById('book-service');
+
+            const updateServiceOptions = () => {
+                const specialtyServices = services.filter(service => service.specialty === specialtySelect.value);
+                const selectedId = specialtyServices.some(service => service.id === bookingState.serviceId) ? bookingState.serviceId : '';
+                serviceSelect.innerHTML = specialtyServices.length
+                    ? `<option value="">-- Escolha um procedimento --</option>${specialtyServices.map(service => `<option value="${service.id}" ${selectedId === service.id ? 'selected' : ''}>${escapeHtml(service.title)} - ${formatPrice(service.price)} (${service.duration} min)</option>`).join('')}`
+                    : '<option value="">Nenhum procedimento disponível nesta especialidade</option>';
+                bookingState.serviceId = selectedId;
+            };
+
+            const updateSlotsView = () => {
+                bookingState.serviceId = serviceSelect.value;
+                bookingState.date = dateInput.value;
+                const containerSlots = document.getElementById('slots-container');
+
+                if (!bookingState.date) {
+                    containerSlots.innerHTML = `<p class="text-xs text-slate-400 col-span-full">Selecione uma data para ver os horários.</p>`;
+                    return;
+                }
+
+                const bookedTimes = getBookedTimes(bookingState.date);
+                
+                containerSlots.innerHTML = slots.map(time => {
+                    const isBooked = bookedTimes.includes(time);
+                    const isSelected = bookingState.time === time;
+                    return `
+                        <button type="button" 
+                            ${isBooked ? 'disabled' : ''} 
+                            onclick="selectTimeSlot('${time}')"
+                            class="py-2.5 rounded-xl text-sm font-medium border transition ${
+                                isBooked ? 'bg-slate-100 text-slate-300 border-slate-100 cursor-not-allowed line-through' :
+                                isSelected ? 'bg-brand-500 text-white border-brand-500' :
+                                'bg-slate-50 hover:bg-brand-50 border-slate-200 text-slate-700'
+                            }">
+                            ${time}
+                        </button>
+                    `;
+                }).join('');
+            };
+
+            specialtySelect.addEventListener('change', () => {
+                bookingState.serviceId = null;
+                bookingState.time = null;
+                updateServiceOptions();
+                updateSlotsView();
+            });
+            dateInput.addEventListener('change', updateSlotsView);
+            serviceSelect.addEventListener('change', () => {
+                bookingState.time = null;
+                updateSlotsView();
+            });
+
+            updateServiceOptions();
+            if (bookingState.date) updateSlotsView();
+        }
+
+        function selectTimeSlot(time) {
+            bookingState.time = time;
+            navigate('booking');
+        }
+
+        async function confirmBooking() {
+            const user = db.getUser();
+            if (!bookingState.serviceId || !bookingState.date || !bookingState.time) {
+                showToast('Preencha todos os campos obrigatórios!', 'error');
+                return;
+            }
+
+            const { error } = await supabase.from('appointments').insert({
+                patient_id: user.id,
+                service_id: bookingState.serviceId,
+                appointment_date: bookingState.date,
+                appointment_time: bookingState.time,
+                status: 'Pendente'
+            });
+
+            if (error) {
+                console.error('Erro ao salvar agendamento:', error);
+                showToast(error.code === '23505'
+                    ? 'Este horário não está mais disponível.'
+                    : `Não foi possível realizar o agendamento: ${error.message}`, 'error');
+                return;
+            }
+
+            bookingState = { serviceId: null, date: null, time: null };
+
+            showToast('Agendamento realizado com sucesso!');
+            navigate('my-appointments');
+        }
+
+        // 5. Agendamentos do Paciente
+        async function renderMyAppointments(container) {
+            const user = db.getUser();
+            const services = db.getServices();
+            container.innerHTML = '<div class="max-w-4xl mx-auto px-4 py-12 text-center text-slate-500">Carregando agendamentos...</div>';
+
+            let appointments;
+            try {
+                appointments = await loadAppointments(user.id);
+            } catch (error) {
+                console.error('Erro ao carregar agendamentos do paciente:', error);
+                showToast(`Não foi possível carregar seus agendamentos: ${error.message}`, 'error');
+                container.innerHTML = '<div class="max-w-4xl mx-auto px-4 py-12 text-center text-rose-600">Não foi possível carregar seus agendamentos.</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto px-4 py-12">
+                    <h1 class="text-3xl font-bold text-slate-900 mb-6">Meus Agendamentos</h1>
+                    ${appointments.length === 0 ? `
+                        <div class="bg-white rounded-2xl p-8 border border-slate-100 text-center space-y-4">
+                            <i class="far fa-calendar-times text-4xl text-slate-300"></i>
+                            <p class="text-slate-500">Você não possui agendamentos cadastrados.</p>
+                            <button onclick="navigate('booking')" class="bg-brand-500 text-white px-4 py-2 rounded-xl text-sm font-semibold">Agendar Agora</button>
+                        </div>
+                    ` : `
+                        <div class="space-y-4">
+                            ${appointments.map(a => {
+                                const s = services.find(srv => srv.id === a.serviceId) || { title: 'Serviço Removido', price: 0 };
+                                const statusColor = 
+                                    a.status === 'Confirmado' ? 'bg-emerald-100 text-emerald-800' :
+                                    a.status === 'Cancelado' ? 'bg-rose-100 text-rose-800' :
+                                    a.status === 'Concluído' ? 'bg-slate-100 text-slate-800' : 'bg-amber-100 text-amber-800';
+                                return `
+                                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
+                                        <div>
+                                            <span class="inline-block text-xs font-bold px-2.5 py-1 rounded-full ${statusColor} mb-2">${a.status}</span>
+                                            <h3 class="font-bold text-slate-900 text-lg">${s.title}</h3>
+                                            <p class="text-sm text-slate-500"><i class="far fa-calendar mr-2"></i>Data: ${a.date} às ${a.time}</p>
+                                            <p class="text-sm font-semibold text-brand-600 mt-1">${formatPrice(s.price)}</p>
+                                        </div>
+                                        ${a.status !== 'Cancelado' && a.status !== 'Concluído' ? `
+                                            <button onclick="cancelAppointment('${a.id}')" class="text-rose-500 hover:text-rose-700 text-sm font-semibold border border-rose-200 hover:bg-rose-50 px-4 py-2 rounded-xl self-start md:self-auto">
+                                                Cancelar Horário
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        async function cancelAppointment(id) {
+            if (!confirm('Deseja realmente cancelar este agendamento?')) return;
+            try {
+                const { error } = await supabase
+                    .from('appointments')
+                    .update({ status: 'Cancelado' })
+                    .eq('id', id);
+                if (error) throw error;
+                showToast('Agendamento cancelado com sucesso.');
+                navigate('my-appointments');
+            } catch (error) {
+                console.error('Erro ao cancelar agendamento:', error);
+                showToast(`Não foi possível cancelar o agendamento: ${error.message}`, 'error');
+            }
+        }
+
+        // 6. Login & Cadastro
+        function renderLogin(container) {
+            container.innerHTML = `
+                <div class="max-w-md mx-auto px-4 py-16">
+                    <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-xl">
+                        <h1 class="text-2xl font-bold text-slate-900 mb-6 text-center">Entrar na OdontoVida</h1>
+                        <form onsubmit="handleLoginExec(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">E-mail</label>
+                                <input type="email" id="login-email" required class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="seu@email.com">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Senha</label>
+                                <input type="password" id="login-password" required class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="••••••••">
+                            </div>
+                            <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-brand-500/20">Entrar</button>
+                        </form>
+                        <p class="text-center text-sm text-slate-500 mt-6">Não tem uma conta? <button onclick="navigate('register')" class="text-brand-600 font-semibold">Cadastre-se</button></p>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function handleLoginExec(e) {
+            e.preventDefault();
+            if (!supabase) {
+                showToast('Supabase não está configurado.', 'error');
+                return;
+            }
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            let data;
+            let error;
+            try {
+                ({ data, error } = await supabase.auth.signInWithPassword({ email, password }));
+            } catch (requestError) {
+                console.error('Erro de rede ao entrar:', requestError);
+                showToast(`Não foi possível conectar ao Supabase: ${requestError.message}`, 'error');
+                return;
+            }
+            if (error) {
+                showToast(`Não foi possível entrar: ${error.message}`, 'error');
+                return;
+            }
+
+            try {
+                const user = await loadCurrentUser(data.user);
+                showToast(`Bem-vindo(a), ${user.name}!`);
+                navigate(user.role === 'admin' ? 'admin-dashboard' : 'home');
+            } catch (profileError) {
+                await supabase.auth.signOut();
+                currentUser = null;
+                console.error('Erro ao carregar perfil do usuário:', profileError);
+                showToast(`Não foi possível carregar seu perfil: ${profileError.message}`, 'error');
+            }
+        }
+
+        function renderRegister(container) {
+            container.innerHTML = `
+                <div class="max-w-md mx-auto px-4 py-16">
+                    <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-xl">
+                        <h1 class="text-2xl font-bold text-slate-900 mb-6 text-center">Criar Conta</h1>
+                        <form onsubmit="handleRegisterExec(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Nome Completo</label>
+                                <input type="text" id="reg-name" required class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">E-mail</label>
+                                <input type="email" id="reg-email" required class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Telefone / WhatsApp</label>
+                                <input type="text" id="reg-phone" required class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="(11) 99999-9999">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Senha</label>
+                                <input type="password" id="reg-password" required class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            </div>
+                            <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-brand-500/20">Criar Conta</button>
+                        </form>
+                        <p class="text-center text-sm text-slate-500 mt-6">Já possui conta? <button onclick="navigate('login')" class="text-brand-600 font-semibold">Entrar</button></p>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function handleRegisterExec(e) {
+            e.preventDefault();
+            if (!supabase) {
+                showToast('Supabase não está configurado.', 'error');
+                return;
+            }
+
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const phone = document.getElementById('reg-phone').value;
+            const password = document.getElementById('reg-password').value;
+
+            let data;
+            let error;
+            try {
+                ({ data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: { data: { name, phone } }
+                }));
+            } catch (requestError) {
+                console.error('Erro de rede ao criar conta:', requestError);
+                showToast(`Não foi possível conectar ao Supabase: ${requestError.message}`, 'error');
+                return;
+            }
+            if (error) {
+                showToast(`Não foi possível criar a conta: ${error.message}`, 'error');
+                return;
+            }
+
+            if (data.session && data.user) {
+                try {
+                    const user = await loadCurrentUser(data.user);
+                    showToast('Conta criada com sucesso!');
+                    navigate(user.role === 'admin' ? 'admin-dashboard' : 'home');
+                } catch (profileError) {
+                    console.error('Erro ao carregar perfil recém-criado:', profileError);
+                    showToast(`Conta criada, mas não foi possível carregar o perfil: ${profileError.message}`, 'error');
+                }
+                return;
+            }
+
+            showToast('Conta criada. Confira seu e-mail para confirmar o cadastro.', 'success');
+            navigate('login');
+        }
+
+        // 7. Perfil do Usuário
+        function renderProfile(container) {
+            const user = db.getUser();
+            container.innerHTML = `
+                <div class="max-w-xl mx-auto px-4 py-12">
+                    <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-md">
+                        <h1 class="text-2xl font-bold text-slate-900 mb-6">Meu Perfil</h1>
+                        <form onsubmit="handleUpdateProfile(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Nome Completo</label>
+                                <input type="text" id="prof-name" value="${escapeHtml(user.name)}" required class="w-full border border-slate-200 rounded-xl px-4 py-3">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">E-mail</label>
+                                <input type="email" id="prof-email" value="${escapeHtml(user.email)}" disabled class="w-full border border-slate-200 rounded-xl px-4 py-3 bg-slate-100 text-slate-500 cursor-not-allowed">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Telefone</label>
+                                <input type="text" id="prof-phone" value="${escapeHtml(user.phone)}" required class="w-full border border-slate-200 rounded-xl px-4 py-3">
+                            </div>
+                            <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl">Salvar Alterações</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function handleUpdateProfile(e) {
+            e.preventDefault();
+            const user = db.getUser();
+            const name = document.getElementById('prof-name').value.trim();
+            const phone = document.getElementById('prof-phone').value.trim();
+            let error;
+            try {
+                ({ error } = await supabase
+                    .from('profiles')
+                    .update({ name, phone })
+                    .eq('id', user.id));
+            } catch (requestError) {
+                console.error('Erro de rede ao atualizar perfil:', requestError);
+                showToast(`Não foi possível conectar ao Supabase: ${requestError.message}`, 'error');
+                return;
+            }
+
+            if (error) {
+                showToast(`Não foi possível atualizar o perfil: ${error.message}`, 'error');
+                return;
+            }
+
+            currentUser = { ...user, name, phone };
+            showToast('Perfil atualizado com sucesso!');
+            renderNav();
+        }
+
+        // --- MÓDULO ADMINISTRATIVO ---
+
+        async function renderAdminDashboard(container) {
+            let appointments = [];
+            try {
+                appointments = await loadAppointments();
+            } catch (error) {
+                console.error('Erro ao carregar agendamentos no painel:', error);
+                showToast(`Não foi possível carregar os agendamentos: ${error.message}`, 'error');
+            }
+
+            const pending = appointments.filter(a => a.status === 'Pendente').length;
+            const confirmed = appointments.filter(a => a.status === 'Confirmado').length;
+
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto px-4 py-12 space-y-8">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                        <h1 class="text-3xl font-bold text-slate-900">Painel Administrativo</h1>
+                        <span class="bg-brand-100 text-brand-700 px-3 py-1 rounded-full text-xs font-semibold uppercase">Modo Gestão</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <span class="text-xs uppercase font-bold text-slate-400">Total Agendamentos</span>
+                            <div class="text-3xl font-extrabold text-slate-800 mt-2">${appointments.length}</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <span class="text-xs uppercase font-bold text-amber-500">Pendentes</span>
+                            <div class="text-3xl font-extrabold text-amber-600 mt-2">${pending}</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <span class="text-xs uppercase font-bold text-emerald-500">Confirmados</span>
+                            <div class="text-3xl font-extrabold text-emerald-600 mt-2">${confirmed}</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <span class="text-xs uppercase font-bold text-brand-500">Pacientes Cadastrados</span>
+                            <div id="patient-count" class="text-3xl font-extrabold text-brand-600 mt-2">...</div>
+                        </div>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <button onclick="navigate('admin-appointments')" class="bg-white hover:bg-slate-50 p-6 rounded-2xl border border-slate-100 text-left shadow-sm transition">
+                            <i class="fas fa-calendar-check text-2xl text-brand-500 mb-2"></i>
+                            <h3 class="font-bold text-slate-800">Gerenciar Agendamentos</h3>
+                            <p class="text-sm text-slate-500">Alterar status e confirmar consultas.</p>
+                        </button>
+                        <button onclick="navigate('admin-services')" class="bg-white hover:bg-slate-50 p-6 rounded-2xl border border-slate-100 text-left shadow-sm transition">
+                            <i class="fas fa-list-alt text-2xl text-brand-500 mb-2"></i>
+                            <h3 class="font-bold text-slate-800">Gerenciar Serviços</h3>
+                            <p class="text-sm text-slate-500">Cadastrar, editar ou remover tratamentos.</p>
+                        </button>
+                        <button onclick="navigate('admin-users')" class="bg-white hover:bg-slate-50 p-6 rounded-2xl border border-slate-100 text-left shadow-sm transition">
+                            <i class="fas fa-users text-2xl text-brand-500 mb-2"></i>
+                            <h3 class="font-bold text-slate-800">Lista de Pacientes</h3>
+                            <p class="text-sm text-slate-500">Visualizar dados de contato dos clientes.</p>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            supabase
+                .from('profiles')
+                .select('id', { count: 'exact', head: true })
+                .eq('role', 'patient')
+                .then(({ count, error }) => {
+                    if (error) throw error;
+                    document.getElementById('patient-count').textContent = count;
+                })
+                .catch((error) => {
+                    console.error('Erro ao contar pacientes:', error);
+                    document.getElementById('patient-count').textContent = '—';
+                    showToast(`Não foi possível carregar os pacientes: ${error.message}`, 'error');
+                });
+        }
+
+        // 8. Gestão de Serviços (Admin)
+        async function renderAdminServices(container) {
+            container.innerHTML = '<div class="max-w-7xl mx-auto px-4 py-12 text-center text-slate-500">Carregando serviços...</div>';
+
+            let services;
+            try {
+                services = await loadServices(true);
+            } catch (error) {
+                console.error('Erro ao carregar serviços administrativos:', error);
+                showToast(`Não foi possível carregar os serviços: ${error.message}`, 'error');
+                container.innerHTML = '<div class="max-w-7xl mx-auto px-4 py-12 text-center text-rose-600">Não foi possível carregar os serviços.</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto px-4 py-12 space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                        <h1 class="text-3xl font-bold text-slate-900">Gerenciar Serviços</h1>
+                    </div>
+                    <p class="text-slate-600">Cada especialidade organiza os procedimentos oferecidos pela clínica.</p>
+                    <div class="space-y-3">
+                        ${SERVICE_SPECIALTIES.map((specialty, index) => {
+                            const specialtyServices = services.filter(service => service.specialty === specialty);
+                            return `
+                                <details class="bg-white rounded-2xl border border-slate-200 overflow-hidden" ${index === 0 ? 'open' : ''}>
+                                    <summary class="cursor-pointer list-none flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50">
+                                        <span class="font-bold text-slate-900">${specialty}</span>
+                                        <span class="text-sm text-slate-500">${specialtyServices.length} serviço(s) <i class="fas fa-chevron-down ml-2"></i></span>
+                                    </summary>
+                                    <div class="border-t border-slate-100 p-4 space-y-4">
+                                        <button onclick="openServiceModal(null, '${specialty}')" class="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-semibold"><i class="fas fa-plus mr-2"></i>Adicionar serviço</button>
+                                        ${specialtyServices.length ? `
+                                            <div class="overflow-x-auto">
+                                                <table class="w-full text-left border-collapse">
+                                                    <thead class="bg-slate-50 text-slate-500 text-xs font-semibold uppercase">
+                                                        <tr>
+                                                            <th class="p-3">Serviço</th>
+                                                            <th class="p-3">Duração</th>
+                                                            <th class="p-3">Valor</th>
+                                                            <th class="p-3">Profissional</th>
+                                                            <th class="p-3">Status</th>
+                                                            <th class="p-3 text-right">Ações</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="divide-y divide-slate-100 text-sm">
+                                                        ${specialtyServices.map(service => `
+                                                            <tr class="${service.active ? '' : 'opacity-60'}">
+                                                                <td class="p-3 font-medium text-slate-800">${escapeHtml(service.title)}</td>
+                                                                <td class="p-3 text-slate-600">${service.duration} min</td>
+                                                                <td class="p-3 font-semibold text-slate-800">${formatPrice(service.price)}</td>
+                                                                <td class="p-3 text-slate-600">${escapeHtml(service.professionalName || 'Não definido')}</td>
+                                                                <td class="p-3"><span class="${service.active ? 'text-emerald-700' : 'text-slate-500'}">${service.active ? 'Ativo' : 'Inativo'}</span></td>
+                                                                <td class="p-3 text-right whitespace-nowrap space-x-3">
+                                                                    <button onclick="openServiceModal('${service.id}')" class="text-brand-600 hover:text-brand-800 font-semibold">Editar</button>
+                                                                    <button onclick="toggleServiceStatus('${service.id}', ${service.active})" class="text-slate-600 hover:text-slate-900 font-semibold">${service.active ? 'Desativar' : 'Ativar'}</button>
+                                                                    <button onclick="deleteService('${service.id}')" class="text-rose-600 hover:text-rose-800 font-semibold">Excluir</button>
+                                                                </td>
+                                                            </tr>
+                                                        `).join('')}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        ` : '<p class="text-sm text-slate-500">Nenhum serviço cadastrado nesta especialidade.</p>'}
+                                    </div>
+                                </details>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function openServiceModal(serviceId = null, initialSpecialty = SERVICE_SPECIALTIES[0]) {
+            let serviceList;
+            try {
+                serviceList = await loadServices(true);
+            } catch (error) {
+                showToast(`Não foi possível carregar o serviço: ${error.message}`, 'error');
+                return;
+            }
+            const service = serviceId ? serviceList.find(item => item.id === serviceId) : {
+                title: '', description: '', specialty: initialSpecialty, duration: 30, price: null, professionalName: '', active: true
+            };
+            if (!service) {
+                showToast('Serviço não encontrado. Atualize a página e tente novamente.', 'error');
+                return;
+            }
+
+            const specialtyOptions = SERVICE_SPECIALTIES.map((specialty, index) => `${index + 1}. ${specialty}`).join('\n');
+            const currentSpecialty = SERVICE_SPECIALTIES.indexOf(service.specialty) + 1;
+            const specialtyInput = prompt(`Especialidade:\n${specialtyOptions}`, String(currentSpecialty || 1));
+            if (specialtyInput === null) return;
+            const specialty = SERVICE_SPECIALTIES[Number.parseInt(specialtyInput, 10) - 1];
+            if (!specialty) {
+                showToast('Selecione um número de especialidade válido.', 'error');
+                return;
+            }
+            const title = prompt('Nome do Serviço:', service.title);
+            if (title === null) return;
+            const description = prompt('Descrição:', service.description);
+            if (description === null) return;
+            const durationInput = prompt('Duração em Minutos:', service.duration);
+            if (durationInput === null) return;
+            const priceInput = prompt('Valor (R$), deixe em branco para preço sob consulta:', service.price ?? '');
+            if (priceInput === null) return;
+            const professionalName = prompt('Profissional responsável (opcional):', service.professionalName || '');
+            if (professionalName === null) return;
+
+            const normalizedTitle = title.trim();
+            const normalizedDescription = description.trim();
+            const duration = Number.parseInt(durationInput, 10);
+            const normalizedPrice = priceInput.trim().replace(',', '.');
+            const price = normalizedPrice === '' ? null : Number.parseFloat(normalizedPrice);
+            if (normalizedTitle.length < 2 || !Number.isInteger(duration) || duration <= 0 || (price !== null && (!Number.isFinite(price) || price < 0))) {
+                showToast('Informe um nome válido, duração maior que zero e valor não negativo ou vazio.', 'error');
+                return;
+            }
+
+            const serviceData = {
+                title: normalizedTitle,
+                description: normalizedDescription,
+                specialty,
+                duration_minutes: duration,
+                price,
+                professional_name: professionalName.trim() || null
+            };
+
+            try {
+                const query = serviceId
+                    ? supabase.from('services').update(serviceData).eq('id', serviceId)
+                    : supabase.from('services').insert(serviceData);
+                const { data, error } = await query
+                    .select('id, title, description, specialty, duration_minutes, price, professional_name, active')
+                    .single();
+                if (error) throw error;
+
+                const savedService = {
+                    id: data.id,
+                    title: data.title,
+                    description: data.description,
+                    specialty: data.specialty,
+                    duration: data.duration_minutes,
+                    price: data.price === null ? null : Number(data.price),
+                    professionalName: data.professional_name,
+                    active: data.active
+                };
+                servicesCache = servicesCache.filter((item) => item.id !== serviceId && item.id !== savedService.id);
+                if (savedService.active) servicesCache.push(savedService);
+
+                showToast('Serviço salvo no Supabase com sucesso!');
+                navigate('admin-services');
+            } catch (error) {
+                console.error('Erro ao salvar serviço no Supabase:', error);
+                showToast(`Não foi possível salvar o serviço: ${error.message}`, 'error');
+            }
+        }
+
+        async function toggleServiceStatus(id, isActive) {
+            try {
+                const { error } = await supabase
+                    .from('services')
+                    .update({ active: !isActive })
+                    .eq('id', id);
+                if (error) throw error;
+
+                if (isActive) servicesCache = servicesCache.filter((service) => service.id !== id);
+                showToast(isActive ? 'Serviço desativado.' : 'Serviço ativado.');
+                navigate('admin-services');
+            } catch (error) {
+                console.error('Erro ao alterar status do serviço:', error);
+                showToast(`Não foi possível alterar o status: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteService(id) {
+            if (!confirm('Excluir este serviço?')) return;
+            try {
+                const { error } = await supabase
+                    .from('services')
+                    .delete()
+                    .eq('id', id);
+                if (error) throw error;
+
+                servicesCache = servicesCache.filter((service) => service.id !== id);
+                showToast('Serviço removido do Supabase.');
+                navigate('admin-services');
+            } catch (error) {
+                console.error('Erro ao excluir serviço do Supabase:', error);
+                showToast(`Não foi possível excluir o serviço: ${error.message}`, 'error');
+            }
+        }
+
+        // 9. Gestão de Agendamentos (Admin)
+        async function renderAdminAppointments(container) {
+            const services = db.getServices();
+            container.innerHTML = '<div class="max-w-7xl mx-auto px-4 py-12 text-center text-slate-500">Carregando agendamentos...</div>';
+
+            let appointments;
+            try {
+                appointments = await loadAppointments();
+            } catch (error) {
+                console.error('Erro ao carregar agendamentos administrativos:', error);
+                showToast(`Não foi possível carregar os agendamentos: ${error.message}`, 'error');
+                container.innerHTML = '<div class="max-w-7xl mx-auto px-4 py-12 text-center text-rose-600">Não foi possível carregar os agendamentos.</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto px-4 py-12 space-y-6">
+                    <h1 class="text-3xl font-bold text-slate-900">Gerenciar Agendamentos</h1>
+                    <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-50 text-slate-500 text-xs font-semibold uppercase">
+                                    <tr>
+                                        <th class="p-4">Paciente</th>
+                                        <th class="p-4">Serviço</th>
+                                        <th class="p-4">Data/Hora</th>
+                                        <th class="p-4">Status</th>
+                                        <th class="p-4 text-right">Alterar Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-sm">
+                                    ${appointments.length === 0 ? `<tr><td colSpan="5" class="p-4 text-center text-slate-400">Nenhum agendamento encontrado.</td></tr>` : ''}
+                                    ${appointments.map(a => {
+                                        const s = services.find(srv => srv.id === a.serviceId) || { title: 'Removido' };
+                                        return `
+                                            <tr>
+                                                <td class="p-4 font-medium text-slate-800">${a.userName}</td>
+                                                <td class="p-4 text-slate-600">${s.title}</td>
+                                                <td class="p-4 text-slate-600">${a.date} - ${a.time}</td>
+                                                <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${
+                                                    a.status === 'Confirmado' ? 'bg-emerald-100 text-emerald-800' :
+                                                    a.status === 'Cancelado' ? 'bg-rose-100 text-rose-800' :
+                                                    a.status === 'Concluído' ? 'bg-slate-100 text-slate-800' : 'bg-amber-100 text-amber-800'
+                                                }">${a.status}</span></td>
+                                                <td class="p-4 text-right">
+                                                    <select onchange="updateStatus('${a.id}', this.value)" class="border rounded-lg px-2 py-1 text-xs">
+                                                        <option value="Pendente" ${a.status==='Pendente'?'selected':''}>Pendente</option>
+                                                        <option value="Confirmado" ${a.status==='Confirmado'?'selected':''}>Confirmar</option>
+                                                        <option value="Concluído" ${a.status==='Concluído'?'selected':''}>Concluir</option>
+                                                        <option value="Cancelado" ${a.status==='Cancelado'?'selected':''}>Cancelar</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function updateStatus(id, newStatus) {
+            try {
+                const { error } = await supabase
+                    .from('appointments')
+                    .update({ status: newStatus })
+                    .eq('id', id);
+                if (error) throw error;
+                showToast('Status atualizado.');
+                navigate('admin-appointments');
+            } catch (error) {
+                console.error('Erro ao atualizar status do agendamento:', error);
+                showToast(`Não foi possível atualizar o status: ${error.message}`, 'error');
+            }
+        }
+
+        // 10. Gestão de Usuários (Admin)
+        function renderAdminUsers(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto px-4 py-12 space-y-6">
+                    <h1 class="text-3xl font-bold text-slate-900">Usuários Cadastrados</h1>
+                    <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-50 text-slate-500 text-xs font-semibold uppercase">
+                                    <tr>
+                                        <th class="p-4">Nome</th>
+                                        <th class="p-4">E-mail</th>
+                                        <th class="p-4">Telefone</th>
+                                        <th class="p-4">Perfil</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-users-list" class="divide-y divide-slate-100 text-sm">
+                                    <tr><td colspan="4" class="p-4 text-center text-slate-400">Carregando usuários...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            supabase
+                .from('profiles')
+                .select('id, name, email, phone, role')
+                .order('created_at', { ascending: false })
+                .then(({ data: users, error }) => {
+                    if (error) throw error;
+                    const list = document.getElementById('admin-users-list');
+                    if (!list) return;
+                    list.innerHTML = users.length ? users.map((user) => `
+                        <tr>
+                            <td class="p-4 font-medium text-slate-800">${escapeHtml(user.name)}</td>
+                            <td class="p-4 text-slate-600">${escapeHtml(user.email)}</td>
+                            <td class="p-4 text-slate-600">${escapeHtml(user.phone || 'N/A')}</td>
+                            <td class="p-4"><span class="px-2 py-0.5 rounded text-xs uppercase font-bold ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-600'}">${escapeHtml(user.role)}</span></td>
+                        </tr>
+                    `).join('') : '<tr><td colspan="4" class="p-4 text-center text-slate-400">Nenhum usuário cadastrado.</td></tr>';
+                })
+                .catch((error) => {
+                    console.error('Erro ao carregar usuários do Supabase:', error);
+                    const list = document.getElementById('admin-users-list');
+                    if (list) list.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-rose-600">Não foi possível carregar os usuários.</td></tr>';
+                    showToast(`Não foi possível carregar os usuários: ${error.message}`, 'error');
+                });
+        }
+
+        Object.assign(window, {
+            cancelAppointment,
+            closeImageModal,
+            confirmBooking,
+            deleteService,
+            handleLoginExec,
+            handleLogout,
+            handleRegisterExec,
+            handleUpdateProfile,
+            navigate,
+            openImageModal,
+            openServiceModal,
+            toggleServiceStatus,
+            scrollToSection,
+            selectTimeSlot,
+            toggleMobileMenu,
+            updateStatus,
+        });
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                if (supabase) {
+                    const { data, error } = await supabase.auth.getSession();
+                    if (error) throw error;
+                    if (data.session) await loadCurrentUser(data.session.user);
+                }
+                await loadServices();
+            } catch (error) {
+                console.error('Erro ao inicializar dados do Supabase:', error);
+                const missingSpecialtyMigration = error.code === '42703' && error.message.includes('specialty');
+                showToast(missingSpecialtyMigration
+                    ? 'Atualize o Supabase executando supabase/migrations/202610090001_service_specialties.sql.'
+                    : `Não foi possível carregar os dados do Supabase: ${error.message}`, 'error');
+            }
+
+            navigate('home');
+        });
+    </script>
+</body>
+</html>
